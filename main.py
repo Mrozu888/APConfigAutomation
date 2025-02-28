@@ -1,45 +1,74 @@
 from dotenv import dotenv_values
 import os
+
+from arp_scan import get_ip_by_mac
 from ssh_client import SSHClient
+import pandas as pd
+
 
 secrets = dotenv_values(".env")
-
-# SSH details
-ssh_hostname = '10.0.0.30'
-ssh_port = 22
-ssh_username = 'super'
-
 ssh_private_key_path = secrets['SSH-PRIVATE-KEY-ROOT']
 ssh_private_key_password = secrets['SSH-PRIVATE-KEY-PASSWORD']
 
-# TFTP server details
-tftp_server_ip = '192.168.0.123'  # Bind interface
-tftp_server_port = 69  # Bind port
+# SSH details
+ssh_port = 22
+ssh_username = 'super'
+ssh_password = 'sp-admin'
 
-fw_name = "H510_200.7.10.202.141.bl7"
 
-commands = ["super", "sp-admin", "fw set host 192.168.0.123", "fw set proto tftp", f"fw set port {tftp_server_port}",
-            f"fw set control {fw_name}", "fw update", "reboot"]
+VSZ_ADDRESS = "63.176.123.97"
 
-# to open file
-# with open("template.txt", "r") as file:
-#     lines = file.readlines()
-#     print(lines)
+ap_password = 'admin123'
 
-try:
-    # Create SSH client and execute commands
-    ssh = SSHClient(ssh_hostname, ssh_username, ssh_private_key_path, ssh_private_key_password)
 
-    # Execute commands
-    # for command in commands:
-    #     ssh.send(command)
-    #
-    # # waiting for an output after executing commands
-    # ssh.read_output(timeout=10)
+subnet = "192.168.0.1"
+netmask = "255.255.255.0"
 
-except KeyboardInterrupt:
-    print("Keyboard interrupt detected. Exiting...")
-finally:
-    # Close SSH connection
-    if ssh:
-        ssh.close()
+
+# Load the Excel file
+file_path = "template.xlsx"  # Update with your actual file path
+df = pd.read_excel(file_path, engine="openpyxl")
+
+# Convert DataFrame to a nested list
+ap_list = df.values.tolist()
+
+# Print the list
+print(ap_list)
+
+for ap in ap_list:
+    try:
+        # Create SSH client and execute commands
+        ipaddr = get_ip_by_mac(ap[1])
+        print(ssh_private_key_path)
+        print(ssh_private_key_password)
+        ssh = SSHClient(ipaddr, ssh_username, password=ssh_password, key_path=ssh_private_key_path, key_pass="zaq1@WSX")
+        # ssh = SSHClient(ipaddr, ssh_username, password=ssh_password)
+
+
+        # commands = [
+        #     "super",
+        #     "sp-admin",
+        #     ap_password,
+        #     ap_password,
+        #     f"set device-name {ap[0]}",
+        #     f"set scg enable",
+        #     f"set scg ip {VSZ_ADDRESS}",
+        #     f"set device-location {ap[3]}",
+        #     f"set ipaddr wan {ap[2]} {netmask} {subnet}",
+        #     "reboot"
+        # ]
+
+
+        # Execute commands
+        # for command in commands:
+        #     ssh.send(command)
+
+        # waiting for an output after executing commands
+        ssh.read_output(timeout=10)
+
+    except KeyboardInterrupt:
+        print("Keyboard interrupt detected. Exiting...")
+    finally:
+        # Close SSH connection
+        if ssh:
+            ssh.close()

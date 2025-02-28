@@ -10,7 +10,7 @@ def get_ip_from_mac_windows(mac_address):
 
         # Search for the MAC address in the output
         for line in result.stdout.split("\n"):
-            if mac_address.lower() in line.lower():
+            if mac_address.lower().replace(':','-') in line.lower():
                 parts = re.split(r'\s+', line.strip())  # Split by whitespace
                 return parts[0]  # IP address is the first column
 
@@ -31,7 +31,6 @@ def get_ip_by_mac_linux(mac_address):
         if mac.lower() == mac_address.lower():
             return ip
     return None
-
 
 
 def get_ip_by_mac(mac_address):
