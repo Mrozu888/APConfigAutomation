@@ -1,5 +1,6 @@
 import pexpect
 import pandas as pd
+from net_util import find_ip_by_mac
 
 # SSH details
 ssh_port = 22
@@ -7,10 +8,8 @@ ssh_username = 'super'
 ssh_password = 'sp-admin'
 
 
-VSZ_ADDRESS = "63.176.123.97"
-
-ap_password = 'G3n3va_123'
-
+VSZ_ADDRESS = ""   # set vSZ IP address
+ap_password = ""  # set ap new password
 
 subnet = "192.168.0.1"
 netmask = "255.255.255.0"
@@ -19,21 +18,17 @@ netmask = "255.255.255.0"
 # Load the Excel file
 file_path = "template.xlsx"  # Update with your actual file path
 df = pd.read_excel(file_path, engine="openpyxl")
-
 # Convert DataFrame to a nested list
 ap_list = df.values.tolist()
-
-# Print the list
-print(ap_list)
 
 
 def ssh_to_ap_and_configure(ap):
     try:
         # Start SSH connection
-        # ssh_ip = get_ip_from_mac(ap[1])
-        ssh_ip = "192.168.0.102"
+        ssh_ip = find_ip_by_mac(ap[1])
+        # ssh_ip = "192.168.0.100"
         print(ssh_ip)
-        ssh_command = f"ssh {ssh_username}@{ssh_ip}"
+        ssh_command = f"ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa {ssh_username}@{ssh_ip}"
         child = pexpect.spawn(ssh_command, timeout=30)
 
         chpasswd = False
@@ -84,8 +79,8 @@ def ssh_to_ap_and_configure(ap):
         commands = [
             f"set device-name {ap[0]}",
             f"set scg enable",
-            f"set scg ip {VSZ_ADDRESS}",
-            # f"set ipaddr wan {ap[2]} {netmask} {subnet}",
+            f"set scg ip {VSZ_ADDRESS}"
+            f"set ipaddr wan {ap[2]} {netmask} {subnet}",
             "reboot"
         ]
 
@@ -107,5 +102,3 @@ def ssh_to_ap_and_configure(ap):
 
 for ap in ap_list:
     ssh_to_ap_and_configure(ap)
-
-print("dupa")
