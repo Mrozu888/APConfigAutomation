@@ -58,6 +58,7 @@ def ssh_to_ap_and_configure(ap):
             "set scg enable",
             f"set scg ip {VSZ_ADDRESS}",
             f"set ipaddr wan {ap[2]} {netmask} {subnet}",     # uncomment to change IP of AP
+            "set autoprov enable"
             # "reboot"
         ]
 
