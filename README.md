@@ -5,15 +5,15 @@
 Edit configuration in `config.json` file.
 ```json
 {
-  "VSZ_ADDRESS": "", // set vSZ address
-  "ap_password": "", // set AP new password
-  "file_path": "template.xlsx", // modify if other file name
-  "ap_subnet_target": "192.168.0.1", // set AP MGMT network
-  "ap_netmask_target": "255.255.255.0", // set AP MGMT netmask
-  "ap_subnet_to_find": "192.168.0.1/24" // specify AP subnet with AP to configure
+  "VSZ_ADDRESS": "", 
+  "ap_password": "", 
+  "file_path": "template.xlsx", 
+  "ap_subnet_target": "192.168.0.1", 
+  "ap_netmask_target": "255.255.255.0", 
+  "ap_subnet_to_find": "192.168.0.1/24" 
 }
 ```
-## Variables to Set
+### Variables:
 
 - **`VSZ_ADDRESS`**  
   Set the **vSZ (Virtual Smart Zone) address**. This is the address of the Virtual Smart Zone used to manage access points.
@@ -37,7 +37,8 @@ Edit configuration in `config.json` file.
   Specify the **AP subnet** where the APs will be located. This is used to find the IP address of the APs within the given network range.  
   Default: `"192.168.0.1/24"`
 
-Install dependiences with:
+### Install dependiences with:
+
 ```bash
 pip install -r requirements.txt
 ```
