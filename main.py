@@ -1,22 +1,24 @@
 import pexpect
 import pandas as pd
+import json
 from net_util import find_ip_by_mac
+
+with open("config.json", "r") as file:
+    config = json.load(file)
 
 # SSH details
 ssh_port = 22
-ssh_username = 'super'
-ssh_password = 'sp-admin'
+ssh_username = "super"
+ssh_password = "sp-admin"
 
-
-VSZ_ADDRESS = ""   # set vSZ IP address
-ap_password = ""  # set ap new password
-
-subnet = "192.168.0.1"
-netmask = "255.255.255.0"
-
+VSZ_ADDRESS = config["VSZ_ADDRESS"]
+ap_password = config["ap_password"]
+file_path = config["file_path"]
+subnet = config["ap_subnet_target"]
+netmask = config["ap_netmask_target"]
+ap_subnet_to_find = config["ap_subnet_to_find"]
 
 # Load the Excel file
-file_path = "template.xlsx"  # Update with your actual file path
 df = pd.read_excel(file_path, engine="openpyxl")
 # Convert DataFrame to a nested list
 ap_list = df.values.tolist()
@@ -25,7 +27,7 @@ ap_list = df.values.tolist()
 def ssh_to_ap_and_configure(ap):
     try:
         # Start SSH connection
-        ssh_ip = find_ip_by_mac(ap[1])
+        ssh_ip = find_ip_by_mac(ap[1], network=ap_subnet_to_find)
         # ssh_ip = "192.168.0.100"
         print(ssh_ip)
         ssh_command = f"ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa {ssh_username}@{ssh_ip}"
@@ -80,8 +82,8 @@ def ssh_to_ap_and_configure(ap):
             f"set device-name {ap[0]}",
             f"set scg enable",
             f"set scg ip {VSZ_ADDRESS}"
-            f"set ipaddr wan {ap[2]} {netmask} {subnet}",
-            "reboot"
+            # f"set ipaddr wan {ap[2]} {netmask} {subnet}",
+            # "reboot"
         ]
 
         for command in commands:

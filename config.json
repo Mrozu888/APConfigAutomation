@@ -1,0 +1,8 @@
+{
+  "VSZ_ADDRESS": "",
+  "ap_password": "",
+  "file_path": "template.xlsx",
+  "ap_subnet_target": "192.168.0.1",
+  "ap_netmask_target": "255.255.255.0",
+  "ap_subnet_to_find": "192.168.0.1/24"
+}
