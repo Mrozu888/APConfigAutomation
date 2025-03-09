@@ -38,7 +38,7 @@ def ssh_to_ap_and_configure(ap):
             try:
                 # Matching the exact SSH prompt patterns
                 index = child.expect([
-                    r"not known by any other names\.\r\nAre you sure you want to continue connecting \(yes/no/\[fingerprint\]\)\?",
+                    r"Are you sure you want to continue connecting \(yes/no/\[fingerprint\]\)\?",
                     r"Please login: ",
                     r"password :",
                     r"New password:",
@@ -81,10 +81,9 @@ def ssh_to_ap_and_configure(ap):
         commands = [
             f"set device-name {ap[0]}",
             f"set scg enable",
-            f"set scg ip {VSZ_ADDRESS}"
-            "set autoprov enable",
-            # f"set ipaddr wan {ap[2]} {netmask} {subnet}",
-            # "reboot"
+            f"set scg ip {VSZ_ADDRESS}",
+            f"set ipaddr wan {ap[2]} {netmask} {subnet}",
+            "reboot"
         ]
 
         for command in commands:
